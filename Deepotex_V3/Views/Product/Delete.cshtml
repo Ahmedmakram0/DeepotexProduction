@@ -1,0 +1,121 @@
+﻿@model IEnumerable<Deepotex.core.Models.Product>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-lg">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0">Delete Products</h2>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <strong>Warning:</strong> This action cannot be undone. Please review the products carefully before proceeding.
+                    </div>
+
+                    <form asp-action="Delete" method="post" id="deleteForm">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="checkbox" id="selectAll">
+                                                <label class="form-check-label" for="selectAll">Select All</label>
+                                            </div>
+                                        </th>
+                                        <th>Name</th>
+                                        <th>Short Description</th>
+                                        <th>Price</th>
+                                        <th>Category</th>
+                                        <th>Image</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model != null && Model.Any())
+                                    {
+                                        foreach (var product in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="form-check">
+                                                        <input class="form-check-input product-checkbox" type="checkbox" name="ids" value="@product.Id">
+                                                    </div>
+                                                </td>
+                                                <td>@product.Name</td>
+                                                <td>@product.SmallDescription</td>
+                                                <td>@product.Price.ToString("C")</td>
+                                                <td>@(product.Category?.Name ?? "None")</td>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                                    {
+                                                        <img src="@product.ImageUrl" class="img-thumbnail" style="max-height: 100px;" alt="@product.Name" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <span class="text-muted">No image</span>
+                                                    }
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="6" class="text-center">No products available.</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="form-group mt-4">
+                            <button type="submit" class="btn btn-danger btn-lg" id="deleteButton" disabled>
+                                <i class="fas fa-trash-alt"></i> Delete Selected
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary btn-lg">
+                                <i class="fas fa-arrow-left"></i> Back to List
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Select all checkbox functionality
+            $('#selectAll').change(function() {
+                $('.product-checkbox').prop('checked', $(this).prop('checked'));
+                updateDeleteButton();
+            });
+
+            // Individual checkbox functionality
+            $('.product-checkbox').change(function() {
+                updateDeleteButton();
+                // Update select all checkbox state
+                var allChecked = $('.product-checkbox:checked').length === $('.product-checkbox').length;
+                $('#selectAll').prop('checked', allChecked);
+            });
+
+            // Update delete button state
+            function updateDeleteButton() {
+                var hasChecked = $('.product-checkbox:checked').length > 0;
+                $('#deleteButton').prop('disabled', !hasChecked);
+            }
+
+            // Form submission confirmation
+            $('#deleteForm').submit(function(e) {
+                var selectedCount = $('.product-checkbox:checked').length;
+                if (selectedCount > 0) {
+                    return confirm(`Are you sure you want to delete ${selectedCount} selected product(s)? This action cannot be undone.`);
+                }
+                return false;
+            });
+        });
+    </script>
+}
+

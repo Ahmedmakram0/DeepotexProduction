@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120" viewBox="0 0 120 120">
+  <defs>
+    <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0068c1" />
+      <stop offset="100%" stop-color="#004080" />
+    </linearGradient>
+    <linearGradient id="yellowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffdd33" />
+      <stop offset="100%" stop-color="#e6b800" />
+    </linearGradient>
+  </defs>
+  <rect width="120" height="120" fill="#ffffff" rx="10" ry="10"/>
+  <g transform="translate(10, 10)">
+    <rect width="40" height="10" x="15" y="25" fill="url(#blueGradient)" rx="2" ry="2"/>
+    <rect width="40" height="10" x="45" y="25" fill="url(#yellowGradient)" rx="2" ry="2"/>
+    <rect width="70" height="6" x="15" y="40" fill="url(#blueGradient)" rx="1" ry="1"/>
+    <rect width="40" height="40" x="30" y="50" fill="url(#yellowGradient)" rx="5" ry="5"/>
+    <rect width="30" height="30" x="35" y="55" fill="url(#blueGradient)" rx="3" ry="3"/>
+    <circle cx="50" cy="70" r="10" fill="#ffffff"/>
+    <text x="50" y="75" font-family="Arial" font-size="12" font-weight="bold" text-anchor="middle" fill="#ffffff">D</text>
+  </g>
+</svg> 

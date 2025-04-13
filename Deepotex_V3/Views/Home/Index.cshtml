@@ -1,0 +1,266 @@
+@model List<Product>
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- Skip to content link for accessibility -->
+<a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+<!-- HEADER =============================-->
+<header class="item header margin-top-0" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('@ViewBag.RandomBackgroundImage')">
+    <div class="wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <div class="text-homeimage">
+                        <div class="maintext-image" data-scrollreveal="enter top over 1.5s after 0.1s">
+                            Deepotex Solutions
+                        </div>
+                        <div class="subtext-image" data-scrollreveal="enter bottom over 1.7s after 0.3s">
+                            Premium Quality, Lasting Durability
+                        </div>
+                        <div class="cta-buttons" data-scrollreveal="enter bottom over 1.9s after 0.5s">
+                            <a asp-controller="Product" asp-action="Index" class="btn btn-primary btn-lg">Explore Products</a>
+                            <a asp-controller="Home" asp-action="Contact" class="btn btn-outline-light btn-lg">Contact Us</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- LOGO SHOWCASE =============================-->
+<section class="logo-showcase">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-right fade-in" data-aos="fade-right">
+                <img src="/images/Logo.png" alt="Deepotex Logo" class="showcase-logo" />
+            </div>
+            <div class="col-md-6 text-center text-md-left fade-in" data-aos="fade-left">
+                <h2 class="showcase-title">Trusted Industrial Solutions</h2>
+                <p class="showcase-description">
+                    With over 10 years of industry experience, Deepotex provides premium adhesives and sealants that meet the highest standards of quality and durability.
+                </p>
+                <a asp-controller="Home" asp-action="About" class="btn btn-primary">Learn More About Us</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- OUR VALUES =============================-->
+<div class="item content" id="main-content">
+    <div class="container toparea">
+        <div class="row text-center">
+            <div class="col-md-4 fade-in">
+                <div class="col editContent value-box">
+                    <span class="numberstep"><i class="fa fa-certificate"></i></span>
+                    <h3 class="numbertext">Premium Quality Products</h3>
+                    <p>
+                        Deepotex offers high-performance adhesives and sealants designed for durability and strength. Our products undergo rigorous testing to ensure long-lasting and reliable results in industrial applications.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 editContent fade-in">
+                <div class="col value-box">
+                    <span class="numberstep"><i class="fa fa-headphones"></i></span>
+                    <h3 class="numbertext">Expert Support & Guidance</h3>
+                    <p>
+                        Our team of professionals is always ready to assist you with product selection, application techniques, and troubleshooting. We believe in offering exceptional customer service tailored to your needs.
+                    </p>
+                </div>
+            </div>
+            <div class="col-md-4 editContent fade-in">
+                <div class="col value-box">
+                    <span class="numberstep"><i class="fa fa-truck"></i></span>
+                    <h3 class="numbertext">Fast & Reliable Delivery</h3>
+                    <p>
+                        We provide quick and efficient shipping to get your products to you on time. Expect reliable delivery services that keep your projects moving forward without delays.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- LATEST ITEMS =============================-->
+<section class="item content">
+    <div class="container">
+        <div class="underlined-title">
+            <div class="editContent">
+                <h1 class="text-center latestitems">Latest Products</h1>
+            </div>
+            <div class="wow-hr type_short">
+                <span class="wow-hr-h">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </span>
+            </div>
+        </div>
+        <div class="row">
+            @if (Model != null && Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <div class="col-md-4 col-sm-6 fade-in">
+                        <div class="productbox">
+                            <div class="fadeshop">
+                                <div class="maxproduct">
+                                    <div class="product-image-container skeleton-loading">
+                                        <img src="@item.ImageUrl" alt="@item.SmallDescription" class="img-responsive" loading="lazy" />
+                                    </div>
+                                    <div class="captionshop text-center">
+                                        <h3>@item.SmallDescription</h3>
+                                        <p>@(item.Description?.Length > 100 ? item.Description.Substring(0, 97) + "..." : item.Description)</p>
+                                        <a href="@Url.Action("Details", "Product", new { id = item.Id })" class="learn-more">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-details">
+                                <div class="product-meta">
+                                    <p class="product-price">@item.Name</p>
+                                    <div class="product-rating">
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                        <i class="fa fa-star"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center">
+                    <p>No products available at the moment. Please check back later.</p>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS =============================-->
+<section class="item content testimonials-section">
+    <div class="container">
+        <div class="underlined-title">
+            <div class="editContent">
+                <h1 class="text-center latestitems">What Our Customers Say</h1>
+            </div>
+            <div class="wow-hr type_short">
+                <span class="wow-hr-h">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </span>
+            </div>
+        </div>
+        
+        <div class="testimonials-carousel">
+            <div class="row">
+                <div class="col-md-4 fade-in">
+                    <div class="testimonial-box">
+                        <div class="testimonial-content">
+                            <p>"Deepotex products have been a game-changer for our construction projects. The waterproof sealant performs exceptionally well even in extreme weather conditions."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h5>Ahmed S.</h5>
+                                <p>Construction Manager</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 fade-in">
+                    <div class="testimonial-box">
+                        <div class="testimonial-content">
+                            <p>"The customer service at Deepotex is outstanding. They helped us select the right adhesive for our specialized manufacturing process, saving us time and resources."</p>
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-info">
+                                <h5>Sarah M.</h5>
+                                <p>Production Director</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4 fade-in">
+                    <div class="testimonial-box">
+                        <div class="testimonial-content">
+                            <p>"We've been using Deepotex products for over 5 years now. Their quality and consistency are unmatched in the industry. Highly recommended for any serious contractor."</p>
+                        </div>
+                        <div class="testimonial-author">
+
+                            <div class="author-info">
+                                <h5>Khalid R.</h5>
+                                <p>General Contractor</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CALL TO ACTION =============================-->
+<div class="item content cta-section">
+    <div class="container text-center">
+        <div class="cta-content fade-in">
+            <h2>Ready to experience premium quality?</h2>
+            <p>Browse our complete catalog of industrial adhesives and sealants.</p>
+            <a asp-action="Index" asp-controller="Product" class="homebrowseitems">
+                Browse All Products
+                <div class="homebrowseitemsicon">
+                    <i class="fa fa-arrow-right"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation for value boxes
+            const valueBoxes = document.querySelectorAll('.value-box');
+            const observerOptions = {
+                threshold: 0.2,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const appearOnScroll = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            valueBoxes.forEach(box => {
+                appearOnScroll.observe(box);
+            });
+            
+            // Handle skeleton loading for product images
+            const productImages = document.querySelectorAll('.product-image-container img');
+            productImages.forEach(img => {
+                img.addEventListener('load', function() {
+                    this.parentElement.classList.remove('skeleton-loading');
+                });
+                
+                // If image is already cached and loaded
+                if (img.complete) {
+                    img.parentElement.classList.remove('skeleton-loading');
+                }
+            });
+        });
+    </script>
+}

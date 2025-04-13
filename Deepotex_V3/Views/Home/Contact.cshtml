@@ -1,0 +1,397 @@
+@{
+    ViewData["Title"] = "Contact Us";
+}
+
+<!-- Skip to content link for accessibility -->
+<a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+<!-- HEADER -->
+<header class="item header margin-top-0" style="background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('@ViewBag.RandomBackgroundImage')">
+    <div class="wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <div class="text-pageheader">
+                        <div class="subtext-image" data-scrollreveal="enter bottom over 1.7s after 0.0s">
+                            <h1 class="contact-header-title">Contact Us</h1>
+                            <p class="contact-header-subtitle">We're here to help with your adhesive needs</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- CONTENT -->
+<section class="item content" id="main-content">
+    <div class="container toparea">
+        <div class="underlined-title mb-5">
+            <div class="editContent">
+                <h1 class="text-center latestitems">Get in Touch</h1>
+            </div>
+            <div class="wow-hr type_short">
+                <span class="wow-hr-h">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </span>
+            </div>
+            <p class="text-center text-muted lead mt-3">Have questions about our products or need assistance? Reach out to us.</p>
+        </div>
+        
+        <div class="row">
+            <!-- Contact Information -->
+            <div class="col-lg-4 col-md-5 fade-in">
+                <div class="contact-info-box shadow-sm">
+                    <div class="online-business-badge">
+                        <i class="fa fa-globe"></i> Online Business
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <h3><i class="fa fa-envelope"></i> Email</h3>
+                        <p><a href="mailto:Deepotex@gmail.com" class="contact-link"><i class="fa fa-arrow-right contact-icon-small"></i> Deepotex@gmail.com</a></p>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <h3><i class="fa fa-phone"></i> WhatsApp Business</h3>
+                        <p>
+                            <a href="https://wa.me/201061212027" target="_blank" class="whatsapp-link">
+                                <i class="fa fa-whatsapp"></i> +201061212027
+                            </a>
+                        </p>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <h3><i class="fa fa-clock-o"></i> Response Time</h3>
+                        <p>We typically respond to all inquiries within 24 hours during business days.</p>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <h3><i class="fa fa-shopping-cart"></i> How to Order</h3>
+                        <p>
+                            Browse our <a asp-controller="Product" asp-action="Index" class="contact-link">products</a>, then contact us via WhatsApp 
+                            or email to place your order. We'll guide you through the process.
+                        </p>
+                    </div>
+                    
+                    <div class="contact-info-item">
+                        <h3><i class="fa fa-truck"></i> Shipping</h3>
+                        <p>We ship to all major cities in the Egypt, UAE, Saudi Arabia, Qatar, and other GCC countries.</p>
+                    </div>
+                    
+                   
+                </div>
+            </div>
+            
+            <!-- Contact Form -->
+            <div class="col-lg-8 col-md-7 fade-in">
+                <div class="contact-form-container shadow-sm">
+                    <div class="alert alert-success alert-dismissible fade show done" role="alert" style="display: none;">
+                        <strong>Thank you!</strong> Your message has been sent successfully. We'll get back to you soon.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    
+                    <form id="contactform">
+                        <div class="form">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="name" class="form-label">Your Name</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-user"></i></span>
+                                            </div>
+                                            <input type="text" id="name" name="name" class="form-control" placeholder="Your Name *" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="email" class="form-label">Your Email</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-envelope"></i></span>
+                                            </div>
+                                            <input type="email" id="email" name="email" class="form-control" placeholder="Your E-mail Address *" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="phone" class="form-label">Your Phone</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-phone"></i></span>
+                                            </div>
+                                            <input type="tel" id="phone" name="phone" class="form-control" placeholder="Your WhatsApp Number">
+                                        </div>
+                                        <small class="form-text text-muted">Include country code (e.g., +971) for WhatsApp communication</small>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="subject" class="form-label">Subject</label>
+                                        <div class="input-group">
+                                            <div class="input-group-prepend">
+                                                <span class="input-group-text"><i class="fa fa-tag"></i></span>
+                                            </div>
+                                            <select id="subject" name="subject" class="form-control" required>
+                                                <option value="" selected disabled>Select Inquiry Type *</option>
+                                                <option value="Product Inquiry">Product Inquiry</option>
+                                                <option value="Order Request">Order Request</option>
+                                                <option value="Price Quote">Price Quote</option>
+                                                <option value="Technical Support">Technical Support</option>
+                                                <option value="Shipping Information">Shipping Information</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="comment" class="form-label">Your Message</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="fa fa-comment"></i></span>
+                                    </div>
+                                    <textarea id="comment" name="comment" class="form-control" rows="5" placeholder="Your Message *" required></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group text-center">
+                                <button type="submit" id="submitButton" class="btn btn-primary btn-lg">
+                                    <i class="fa fa-paper-plane"></i> Send Message
+                                </button>
+                                <div class="mt-3">
+                                    <a href="https://wa.me/+201061212027" target="_blank" class="btn btn-success whatsapp-direct-btn">
+                                        <i class="fa fa-whatsapp"></i> Contact via WhatsApp
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- FAQ Section for Online Business -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="underlined-title">
+                    <div class="editContent">
+                        <h2 class="text-center">Frequently Asked Questions</h2>
+                    </div>
+                    <div class="wow-hr type_short">
+                        <span class="wow-hr-h">
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                            <i class="fa fa-star"></i>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="faq-container fade-in">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                                        <i class="fa fa-question-circle"></i> How do I place an order?
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#faqAccordion">
+                                <div class="card-body">
+                                    As an online business, we handle orders through direct communication. Browse our products, then contact us via email or WhatsApp with your requirements. We'll provide a quote, payment options, and shipping details. Our team will guide you through the entire process.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header" id="headingTwo">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                                        <i class="fa fa-question-circle"></i> What payment methods do you accept?
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#faqAccordion">
+                                <div class="card-body">
+                                    We accept bank transfers, credit cards, and online payment methods. For large orders, we can arrange flexible payment terms. Payment details will be provided after your order is confirmed.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header" id="headingThree">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                                        <i class="fa fa-question-circle"></i> How long does shipping take?
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#faqAccordion">
+                                <div class="card-body">
+                                    Shipping times vary depending on your location. Typically, orders within the UAE are delivered within 2-3 business days. International shipping to other GCC countries takes 5-7 business days. We'll provide tracking information once your order is shipped.
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-header" id="headingFour">
+                                <h2 class="mb-0">
+                                    <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                                        <i class="fa fa-question-circle"></i> Can I get technical support for your products?
+                                    </button>
+                                </h2>
+                            </div>
+                            <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#faqAccordion">
+                                <div class="card-body">
+                                    Yes, our technical team is available to provide guidance on product selection, application methods, and troubleshooting. Contact us through email or WhatsApp, and our experts will assist you with any technical questions.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@@emailjs/browser@4/dist/email.min.js"></script>
+    <script>
+        // Initialize EmailJS
+        (function() {
+            emailjs.init("SEAK_--XUFFq_TCzj");
+        })();
+
+        // Contact form handling
+        document.addEventListener('DOMContentLoaded', function() {
+            const contactForm = document.getElementById("contactform");
+            const submitButton = document.getElementById("submitButton");
+            const alertSuccess = document.querySelector('.alert-success');
+
+            // Close alert when close button is clicked
+            const closeAlert = document.querySelector('.alert .close');
+            if (closeAlert) {
+                closeAlert.addEventListener('click', function() {
+                    alertSuccess.style.display = 'none';
+                });
+            }
+
+            contactForm.addEventListener("submit", function(event) {
+                event.preventDefault();
+
+                // Disable button and show loading state
+                const originalButtonText = submitButton.innerHTML;
+                submitButton.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Sending...';
+                submitButton.disabled = true;
+
+                // Get form data
+                const formData = {
+                    from_name: contactForm.querySelector('input[name="name"]').value,
+                    from_email: contactForm.querySelector('input[name="email"]').value,
+                    phone: contactForm.querySelector('input[name="phone"]').value || 'Not provided',
+                    subject: contactForm.querySelector('select[name="subject"]').value,
+                    message: contactForm.querySelector('textarea[name="comment"]').value
+                };
+
+                // Send email using EmailJS
+                emailjs.send("service_2k8zd7z", "template_f8tsi29", formData)
+                    .then(function(response) {
+                        // Show success message
+                        alertSuccess.style.display = 'block';
+
+                        // Scroll to the success message
+                        alertSuccess.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                        // Reset form
+                        contactForm.reset();
+                    })
+                    .catch(function(error) {
+                        console.error("EmailJS error:", error);
+                        alert("Failed to send message. Please try again later.");
+                    })
+                    .finally(function() {
+                        // Reset button state
+                        submitButton.innerHTML = originalButtonText;
+                        submitButton.disabled = false;
+                    });
+            });
+
+            // Add animation for elements
+            const fadeElements = document.querySelectorAll('.fade-in');
+            const observerOptions = {
+                threshold: 0.2,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const appearOnScroll = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animated');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            fadeElements.forEach(element => {
+                appearOnScroll.observe(element);
+            });
+
+            // Floating label effect for form fields
+            const formInputs = document.querySelectorAll('.form-control');
+            formInputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('input-focused');
+                });
+
+                input.addEventListener('blur', function() {
+                    if (this.value === '') {
+                        this.parentElement.classList.remove('input-focused');
+                    }
+                });
+
+                // Check initial state (in case of browser autofill)
+                if (input.value !== '') {
+                    input.parentElement.classList.add('input-focused');
+                }
+            });
+
+            // Debug: Log clicks on accordion buttons
+            $('#faqAccordion .btn-link').on('click', function() {
+                console.log('Accordion button clicked:', $(this).data('target'));
+            });
+
+            // Manual accordion toggle
+            $('#faqAccordion .btn-link').on('click', function(e) {
+                e.preventDefault();
+                const target = $(this).data('target');
+
+                // If the clicked item is already open, close it
+                if ($(target).hasClass('show')) {
+                    $(target).collapse('hide');
+                } else {
+                    // Close all other items
+                    $('#faqAccordion .collapse.show').collapse('hide');
+                    // Open the clicked item
+                    $(target).collapse('show');
+                }
+            });
+
+            // Ensure the first item is open on page load
+            $('#collapseOne').collapse('show');
+        });
+    </script>
+}

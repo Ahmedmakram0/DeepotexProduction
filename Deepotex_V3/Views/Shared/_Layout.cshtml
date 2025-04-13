@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+
+    <!-- Site metas -->
+    <title>@ViewData["Title"] - Deepotex</title>
+    <meta name="description" content="Premium quality adhesives and sealants for industrial applications">
+    <meta name="keywords" content="adhesives, sealants, industrial, waterproof, Deepotex">
+    <!-- Open Graph / Social Media Meta Tags -->
+    <meta property="og:title" content="@ViewData["Title"] - Deepotex">
+    <meta property="og:description" content="Premium quality adhesives and sealants for industrial applications">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://deepotex.com">
+    <meta property="og:image" content="~/images/Logo.png">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" type="text/css" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <!-- Style CSS -->
+    <link rel="stylesheet" type="text/css" href="~/css/style.css" />
+    <!-- Fonts CSS -->
+    <link rel="stylesheet" type="text/css" href="~/css/fonts.css" />
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="~/css/responsive.css" asp-append-version="true" />
+    <!-- Admin CSS (only for authorized users) -->
+    @if (User.Identity?.IsAuthenticated == true)
+    {
+        <link rel="stylesheet" type="text/css" href="~/css/admin.css" />
+    }
+    <!-- Favicon -->
+    <link rel="icon" href="~/images/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate icon" href="~/images/Logo.png" type="image/png" />
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Dosis:wght@300;400;500;600;700&family=Merriweather:wght@300;400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+    <!-- HEADER =============================-->
+    <header class="item header margin-top-0" id="landingHeader">
+        <div class="wrapper">
+            <nav role="navigation" class="navbar navbar-expand-lg navbar-lg fixed-top">
+                <div class="container">
+                    <div class="navbar-header d-flex justify-content-between align-items-center">
+                        <a asp-action="Index" asp-controller="Home" class="navbar-brand brand">
+                            <div class="logo-text">
+                                <span class="logo-deep">DEEP</span><span class="logo-potex">OTEX</span>
+                            </div>
+                        </a>
+                        <button class="navbar-toggler" type="button" id="sidebarToggle" aria-label="Toggle navigation">
+                            <div class="toggler-icon">
+                                <span></span>
+                                <span></span>
+                                <span></span>
+                            </div>
+                        </button>
+                    </div>
+                    <div id="navbar-collapse-02" class="collapse navbar-collapse">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Home" ? "active" : "")">
+                                <a class="nav-link" asp-controller="Home" asp-action="Index">
+                                    <i class="fa fa-home nav-icon"></i> Home
+                                </a>
+                            </li>
+                            <li class="nav-item dropdown @(ViewContext.RouteData.Values["Controller"].ToString() == "Product" ? "active" : "")">
+                                <a class="nav-link dropdown-toggle" href="#" id="productDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-box nav-icon"></i> Products
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="productDropdown">
+                                    <a class="dropdown-item" asp-controller="Product" asp-action="Index">
+                                        <i class="fa fa-layer-group dropdown-icon"></i> All Products
+                                    </a>
+                                    </div>
+                            </li>
+                            <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "About" && ViewContext.RouteData.Values["Controller"].ToString() == "Home" ? "active" : "")">
+                                <a class="nav-link" asp-controller="Home" asp-action="About">
+                                    <i class="fa fa-info-circle nav-icon"></i> About Us
+                                </a>
+                            </li>
+                            <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Contact" && ViewContext.RouteData.Values["Controller"].ToString() == "Home" ? "active" : "")">
+                                <a class="nav-link" asp-controller="Home" asp-action="Contact">
+                                    <i class="fa fa-envelope nav-icon"></i> Contact
+                                </a>
+                            </li>
+                        </ul>
+                        
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Mobile Sidebar Navigation -->
+    <div class="mobile-sidebar">
+        <div class="sidebar-header">
+            <div class="logo-text">
+                <span class="logo-deep">DEEP</span><span class="logo-potex">OTEX</span>
+            </div>
+            <button class="close-sidebar">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="sidebar-body">
+            <ul class="sidebar-nav">
+                <li class="sidebar-item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "Home" ? "active" : "")">
+                    <a class="sidebar-link" asp-controller="Home" asp-action="Index">
+                        <i class="fa fa-home nav-icon"></i> Home
+                    </a>
+                </li>
+                <li class="sidebar-item @(ViewContext.RouteData.Values["Controller"].ToString() == "Product" ? "active" : "")">
+                    <a class="sidebar-link dropdown-toggle" href="#productSubmenu" data-toggle="collapse" aria-expanded="false">
+                        <i class="fa fa-box nav-icon"></i> Products
+                    </a>
+                    <ul class="collapse sidebar-submenu" id="productSubmenu">
+                        <li>
+                            <a asp-controller="Product" asp-action="Index">
+                                <i class="fa fa-layer-group dropdown-icon"></i> All Products
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="sidebar-item @(ViewContext.RouteData.Values["Action"].ToString() == "About" && ViewContext.RouteData.Values["Controller"].ToString() == "Home" ? "active" : "")">
+                    <a class="sidebar-link" asp-controller="Home" asp-action="About">
+                        <i class="fa fa-info-circle nav-icon"></i> About Us
+                    </a>
+                </li>
+                <li class="sidebar-item @(ViewContext.RouteData.Values["Action"].ToString() == "Contact" && ViewContext.RouteData.Values["Controller"].ToString() == "Home" ? "active" : "")">
+                    <a class="sidebar-link" asp-controller="Home" asp-action="Contact">
+                        <i class="fa fa-envelope nav-icon"></i> Contact
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="sidebar-overlay"></div>
+
+    <!-- MAIN CONTENT =============================-->
+    <div class="container main-container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <!-- ALERTS =============================-->
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            @TempData["Error"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            @TempData["Success"]
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    }
+
+    <!-- FOOTER =============================-->
+    <div class="footer text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <p class="footernote">Connect with Deepotex</p>
+                    <p> 2025 Deepotex | Contact us at: +966569634996 </p>
+                    <ul class="social-iconsfooter">
+                        <li><a asp-action="About" asp-controller="Home" aria-label="About Us"><i class="fa fa-info-circle"></i></a></li>
+                        <li><a asp-action="Contact" asp-controller="Home" aria-label="Contact Us"><i class="fa fa-envelope"></i></a></li>
+                        <li>
+                            <a href="#" id="whatsappLink" class="whatsapp-icon" data-whatsapp-number="+201061212027" target="_blank" aria-label="Contact via WhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPTS =============================-->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    
+    <script>
+        // Initialize AOS animations
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true
+        });
+        
+        // Wait for document ready
+        $(document).ready(function() {
+            // Handle browser resize and adjustments
+            function handleWindowResize() {
+                const width = $(window).width();
+            }
+            
+            // Fix dropdown on desktop
+            if ($(window).width() >= 992) {
+                $('.dropdown').on({
+                    mouseenter: function() {
+                        $(this).find('.dropdown-menu').addClass('show');
+                    },
+                    mouseleave: function() {
+                        $(this).find('.dropdown-menu').removeClass('show');
+                    }
+                });
+                
+                // Prevent default action on dropdown toggle click on desktop
+                $('.nav-item.dropdown .dropdown-toggle').on('click', function(e) {
+                    if ($(window).width() >= 992) {
+                        e.preventDefault();
+                    }
+                });
+            }
+            
+            // Sidebar toggle
+            $('#sidebarToggle').on('click', function() {
+                $('.mobile-sidebar').addClass('active');
+                $('.sidebar-overlay').addClass('active');
+                $('body').addClass('sidebar-open');
+            });
+            
+            // Close sidebar when clicking the close button
+            $('.close-sidebar').on('click', function() {
+                $('.mobile-sidebar').removeClass('active');
+                $('.sidebar-overlay').removeClass('active');
+                $('body').removeClass('sidebar-open');
+            });
+            
+            // Close sidebar when clicking the overlay
+            $('.sidebar-overlay').on('click', function() {
+                $('.mobile-sidebar').removeClass('active');
+                $('.sidebar-overlay').removeClass('active');
+                $('body').removeClass('sidebar-open');
+            });
+            
+            // Submenu toggle in sidebar
+            $('.sidebar-link.dropdown-toggle').on('click', function(e) {
+                e.preventDefault();
+                $(this).parent().toggleClass('open');
+                
+                // Toggle submenu with smooth animation
+                var submenu = $($(this).attr('href'));
+                if (submenu.hasClass('show')) {
+                    submenu.removeClass('show');
+                } else {
+                    // Close all other submenus
+                    $('.sidebar-submenu.show').removeClass('show');
+                    submenu.addClass('show');
+                }
+            });
+            
+            // Close sidebar when clicking on a non-dropdown link in mobile
+            $('.sidebar-link:not(.dropdown-toggle)').on('click', function() {
+                if (window.innerWidth < 992) {
+                    setTimeout(function() {
+                        $('.mobile-sidebar').removeClass('active');
+                        $('.sidebar-overlay').removeClass('active');
+                        $('body').removeClass('sidebar-open');
+                    }, 150);
+                }
+            });
+            
+            // Close sidebar when clicking on a submenu item
+            $('.sidebar-submenu a').on('click', function() {
+                if (window.innerWidth < 992) {
+                    setTimeout(function() {
+                        $('.mobile-sidebar').removeClass('active');
+                        $('.sidebar-overlay').removeClass('active');
+                        $('body').removeClass('sidebar-open');
+                    }, 150);
+                }
+            });
+            
+            // Close sidebar on window resize (if it goes into desktop mode)
+            $(window).on('resize', function() {
+                if (window.innerWidth >= 992) {
+                    $('.mobile-sidebar').removeClass('active');
+                    $('.sidebar-overlay').removeClass('active');
+                    $('body').removeClass('sidebar-open');
+                }
+            });
+            
+            // Smooth scrolling
+            $('a[href^="#"]').on('click', function(e) {
+                var target = $(this.getAttribute('href'));
+                if (target.length) {
+                    e.preventDefault();
+                    $('html, body').animate({
+                        scrollTop: target.offset().top - 70
+                    }, 500);
+                }
+            });
+        });
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,230 @@
+@model IEnumerable<Product>
+@{
+    ViewData["Title"] = "Products - Deepotex";
+}
+
+<!-- Skip to content link for accessibility -->
+<a href="#main-content" class="skip-to-content">Skip to main content</a>
+
+<!-- HEADER -->
+<header class="item header margin-top-0" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('@ViewBag.RandomBackgroundImage')">
+    <div class="wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <div class="text-pageheader">
+                        <div class="subtext-image" data-scrollreveal="enter bottom over 1.7s after 0.1s">
+                            Our Products
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- CONTENT -->
+<section class="item content" id="main-content">
+    <div class="container toparea">
+        <div class="underlined-title">
+            <div class="editContent">
+                <h1 class="text-center latestitems">PREMIUM ADHESIVE SOLUTIONS</h1>
+            </div>
+            <div class="wow-hr type_short">
+                <span class="wow-hr-h">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </span>
+            </div>
+        </div>
+
+        
+        <!-- Products Grid -->
+        <div class="row product-grid">
+            @if(Model != null && Model.Any())
+            {
+                foreach (var product in Model)
+                {
+                    <div class="col-md-4 col-sm-6 product-item fade-in" data-category="@(product.CategoryId.HasValue ? product.CategoryId.Value : 1)">
+                        <div class="productbox">
+                            <div class="fadeshop">
+                                <div class="maxproduct">
+                                    <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "/images/product-placeholder.jpg" : product.ImageUrl)" 
+                                         alt="@(string.IsNullOrEmpty(product.Name) ? "Product" : product.Name)" 
+                                         class="img-fluid" 
+                                         loading="lazy">
+                                    <div class="captionshop text-center">
+                                        <h3>@(string.IsNullOrEmpty(product.Name) ? "Product" : product.Name)</h3>
+                                        <p>@(string.IsNullOrEmpty(product.SmallDescription) ? "No description available" : product.SmallDescription)</p>
+                                        <p class="key-features">
+                                            @if(product.Features != null && product.Features.Any())
+                                            {
+                                                <span class="badge badge-primary">@product.Features.FirstOrDefault()</span>
+                                                @if(product.Features.Count > 1)
+                                                {
+                                                    <span class="badge badge-secondary">+@(product.Features.Count - 1) more</span>
+                                                }
+                                            }
+                                        </p>
+                                        <a asp-action="Details" asp-controller="Product" asp-route-id="@product.Id" class="learn-more">View Details</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="product-details">
+                                <a asp-action="Details" asp-controller="Product" asp-route-id="@product.Id">
+                                    <h4 class="product-title">@(string.IsNullOrEmpty(product.Name) ? "Product" : product.Name)</h4>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12 text-center no-products">
+                    <div class="alert alert-info">
+                        <i class="fa fa-info-circle fa-2x mb-3"></i>
+                        <h4>No products available</h4>
+                        <p>We're currently updating our product catalog. Please check back soon!</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action -->
+<div class="item content cta-section">
+    <div class="container text-center">
+        <div class="cta-content fade-in">
+            <h2>Need a custom solution?</h2>
+            <p>Contact our team to discuss your specific adhesive requirements.</p>
+            <a asp-action="Contact" asp-controller="Home" class="homebrowseitems">
+                Get in Touch
+                <div class="homebrowseitemsicon">
+                    <i class="fa fa-arrow-right"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Product filtering
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            const productItems = document.querySelectorAll('.product-item');
+            
+            filterButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Update active button
+                    filterButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const filterValue = this.getAttribute('data-filter');
+                    
+                    productItems.forEach(item => {
+                        if (filterValue === 'all') {
+                            item.style.display = 'block';
+                        } else {
+                            const category = item.getAttribute('data-category');
+                            if (
+                                (filterValue === 'adhesives' && category === '1') ||
+                                (filterValue === 'sealants' && category === '2') ||
+                                (filterValue === 'specialty' && category === '3')
+                            ) {
+                                item.style.display = 'block';
+                            } else {
+                                item.style.display = 'none';
+                            }
+                        }
+                    });
+                });
+            });
+            
+            // Add animation for elements with IntersectionObserver
+            if ('IntersectionObserver' in window) {
+                const fadeElements = document.querySelectorAll('.fade-in');
+                const observerOptions = {
+                    threshold: 0.2,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+                
+                const appearOnScroll = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animated');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, observerOptions);
+                
+                fadeElements.forEach(element => {
+                    appearOnScroll.observe(element);
+                });
+            } else {
+                // Fallback for browsers that don't support IntersectionObserver
+                document.querySelectorAll('.fade-in').forEach(element => {
+                    element.classList.add('animated');
+                });
+            }
+            
+            // Image loading error handling
+            const productImages = document.querySelectorAll('.img-fluid');
+            productImages.forEach(img => {
+                img.addEventListener('error', function() {
+                    // Replace broken images with placeholder
+                    this.src = '/images/placeholder.html';
+                    this.alt = 'Image not available';
+                });
+            });
+            
+            // Lazy loading for images
+            if ('loading' in HTMLImageElement.prototype) {
+                // Browser supports native lazy loading
+                document.querySelectorAll('img[loading="lazy"]').forEach(img => {
+                    // Make sure all images have the lazy loading attribute
+                    img.setAttribute('loading', 'lazy');
+                });
+            } else {
+                // Fallback for browsers that don't support lazy loading
+                // Load a lazy loading polyfill if needed
+                const lazyImages = document.querySelectorAll('img[loading="lazy"]');
+                
+                if (lazyImages.length > 0) {
+                    const lazyImageObserver = new IntersectionObserver((entries, observer) => {
+                        entries.forEach(entry => {
+                            if (entry.isIntersecting) {
+                                const lazyImage = entry.target;
+                                lazyImage.src = lazyImage.dataset.src || lazyImage.src;
+                                observer.unobserve(lazyImage);
+                            }
+                        });
+                    });
+                    
+                    lazyImages.forEach(lazyImage => {
+                        // Store the current src as data-src if not already set
+                        if (!lazyImage.dataset.src) {
+                            lazyImage.dataset.src = lazyImage.src;
+                        }
+                        lazyImageObserver.observe(lazyImage);
+                    });
+                }
+            }
+            
+            // Add hover effect for product cards
+            const productBoxes = document.querySelectorAll('.productbox');
+            productBoxes.forEach(box => {
+                box.addEventListener('mouseenter', function() {
+                    this.classList.add('hover');
+                });
+                
+                box.addEventListener('mouseleave', function() {
+                    this.classList.remove('hover');
+                });
+            });
+        });
+    </script>
+}

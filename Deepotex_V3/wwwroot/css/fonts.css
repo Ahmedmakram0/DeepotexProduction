@@ -1,0 +1,278 @@
+/* 
+* Deepotex Font Styling
+* Comprehensive font system with responsive adjustments
+*/
+
+/* Font imports */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&family=Dosis:wght@300;400;500;600;700&family=Merriweather:wght@300;400;500;700&display=swap');
+
+/* Base font variables */
+:root {
+    --font-family: 'Georgia', 'Merriweather', serif;
+    --heading-font: 'Montserrat', sans-serif;
+    --nav-font: 'Poppins', sans-serif;
+    --logo-font: 'Poppins', sans-serif;
+    --header-font: 'Dosis', sans-serif;
+}
+
+/* Base font sizing for large screens */
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: var(--font-family);
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--text-light);
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--heading-font);
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
+h4 { font-size: 1.5rem; }
+h5 { font-size: 1.25rem; }
+h6 { font-size: 1rem; }
+
+/* Navigation */
+.navbar-lg .navbar-nav > li > a {
+    font-family: var(--nav-font);
+    font-size: 1rem;
+    font-weight: 500;
+    color: #fff;
+}
+
+/* Logo */
+.logo-text {
+    font-family: var(--logo-font);
+    font-weight: 600;
+    font-size: 1.8rem;
+    line-height: 1;
+    text-transform: uppercase;
+}
+
+.logo-tagline {
+    font-family: var(--header-font);
+    font-weight: 400;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+/* Homepage header */
+.text-homeimage {
+    font-family: var(--heading-font);
+    font-weight: 500;
+    font-size: 75px;
+    line-height: 90px;
+}
+
+.text-homeimage .maintext-image {
+    font-family: var(--heading-font);
+    font-weight: 500;
+    font-size: 4.6875rem;
+    line-height: 5.625rem;
+}
+
+.text-homeimage .subtext-image {
+    font-family: var(--font-family);
+    font-weight: 300;
+    font-size: 1.5rem;
+}
+
+/* Page header */
+.text-pageheader {
+    font-family: var(--header-font);
+    font-weight: 700;
+    font-size: 45px;
+    line-height: 1.2;
+}
+
+.text-pageheader .subtext-image {
+    font-family: var(--header-font);
+    font-weight: 700;
+    font-size: 2.8125rem;
+    line-height: 3.4rem;
+}
+
+/* Buttons */
+.btn, 
+.homebrowseitems,
+.learn-more {
+    font-family: var(--nav-font);
+    font-weight: 600;
+    font-size: 1rem;
+}
+
+/* Mobile responsive adjustments */
+/* Medium devices (tablets, 768px to 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+    html {
+        font-size: 15px;
+    }
+    
+    body {
+        font-size: 15px;
+    }
+    
+    h1 { font-size: 2.2rem; }
+    h2 { font-size: 2rem; }
+    h3 { font-size: 1.7rem; }
+    h4 { font-size: 1.5rem; }
+    h5 { font-size: 1.3rem; }
+    h6 { font-size: 1rem; }
+    
+    .text-homeimage .maintext-image {
+        font-size: 3rem;
+        line-height: 3.5rem;
+    }
+    
+    .nav-link {
+        font-size: 1.1rem;
+    }
+    
+    .logo-text {
+        font-size: 1.5rem;
+    }
+}
+
+/* Small devices (landscape phones, 576px to 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+    html {
+        font-size: 14px;
+    }
+    
+    body {
+        font-size: 14px;
+    }
+    
+    h1 { font-size: 2.4rem; }
+    h2 { font-size: 2.1rem; }
+    h3 { font-size: 1.8rem; }
+    h4 { font-size: 1.5rem; }
+    h5 { font-size: 1.3rem; }
+    h6 { font-size: 1.1rem; }
+    
+    .text-homeimage .maintext-image {
+        font-size: 2.3rem;
+        line-height: 2.8rem;
+    }
+    
+    .text-homeimage .subtext-image {
+        font-size: 1.4rem;
+    }
+    
+    .nav-link {
+        font-size: 1.4rem;
+    }
+    
+    .dropdown-item {
+        font-size: 1.2rem;
+    }
+    
+    .logo-text {
+        font-size: 1.5rem;
+    }
+    
+    .btn, 
+    .homebrowseitems,
+    .learn-more {
+        font-size: 1.1rem;
+    }
+}
+
+/* Extra small devices (phones, 576px and down) */
+@media (max-width: 576px) {
+    html {
+        font-size: 12px;
+    }
+    
+    body {
+        font-size: 12px;
+        line-height: 1.8;
+    }
+
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.8rem; }
+    h3 { font-size: 1.5rem; }
+    h4 { font-size: 1.3rem; }
+    h5 { font-size: 1.2rem; }
+    h6 { font-size: 1.1rem; }
+    
+    .text-homeimage .maintext-image {
+        font-size: 2.5rem;
+        line-height: 3rem;
+    }
+    
+    .text-homeimage .subtext-image {
+        font-size: 1.5rem;
+    }
+    
+    .text-pageheader .subtext-image {
+        font-size: 1.8rem;
+        line-height: 2.2rem;
+    }
+    
+    .nav-link {
+        font-size: 1.5rem;
+    }
+    
+    .logo-text {
+        font-size: 1.3rem;
+    }
+    
+    .logo-tagline {
+        font-size: 0.7rem;
+    }
+    
+    .btn, 
+    .homebrowseitems,
+    .learn-more {
+        font-size: 0.9rem;
+    }
+}
+
+/* Very small devices (≤352px) */
+@media (max-width: 352px) {
+    html {
+        font-size: 10px;
+    }
+    
+    body {
+        font-size: 10px;
+        line-height: 1.4;
+    }
+    
+    .text-homeimage .maintext-image {
+        font-size: 1.5rem;
+        line-height: 1.8rem;
+    }
+    
+    .text-homeimage .subtext-image {
+        font-size: 0.9rem;
+        line-height: 1.2rem;
+    }
+    
+    .text-pageheader .subtext-image {
+        font-size: 1.2rem;
+        line-height: 1.8rem;
+    }
+    
+    .product-title {
+        font-size: 0.8rem;
+    }
+    
+    .btn, 
+    .homebrowseitems,
+    .learn-more {
+        font-size: 0.8rem;
+    }
+} 

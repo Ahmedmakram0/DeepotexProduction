@@ -1,0 +1,252 @@
+@model Deepotex.core.Models.Product
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = Model.Name;
+}
+
+<!-- Skip to content link for accessibility -->
+<a href="#product-content" class="skip-to-content">Skip to main content</a>
+
+<!-- HEADER =============================-->
+<header class="item header margin-top-0" style="background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('@ViewBag.RandomBackgroundImage')">
+    <div class="wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 text-center">
+                    <div class="text-pageheader">
+                        <div class="subtext-image" aria-label="Product name">
+                            @Model.Name
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- CONTENT =============================-->
+<section class="item content" id="product-content">
+    <div class="container toparea">
+        <div class="underlined-title">
+            <div class="editContent">
+                <h1 class="text-center latestitems">@Model.SmallDescription</h1>
+            </div>
+            <div class="wow-hr type_short">
+                <span class="wow-hr-h">
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                    <i class="fa fa-star"></i>
+                </span>
+            </div>
+        </div>
+        
+        <nav aria-label="breadcrumb" class="product-breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                <li class="breadcrumb-item"><a asp-controller="Product" asp-action="Index">Products</a></li>
+                <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+            </ol>
+        </nav>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="product-image">
+                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="product-details">
+                    <h2 class="product-title">@Model.Name</h2>
+                    <div class="product-price">
+                        <span class="price">$@Model.Price.ToString("F2")</span>
+                    </div>
+                    <div class="product-description">
+                        <p>@Model.Description</p>
+                    </div>
+                    <div class="product-features">
+                        <h3>Features</h3>
+                        <ul class="feature-list">
+                            @foreach (var feature in Model.Features)
+                            {
+                                <li>@feature</li>
+                            }
+                        </ul>
+                    </div>
+                    @if (Model.Category != null)
+                    {
+                        <div class="product-category">
+                            <span class="category-label">Category:</span>
+                            <span class="category-name">@Model.Category.Name</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        
+        @if (ViewBag.RelatedProducts != null && ((IEnumerable<Deepotex.core.Models.Product>)ViewBag.RelatedProducts).Any())
+        {
+            <div class="related-products mt-5">
+                <h3 class="text-center mb-4">Related Products</h3>
+                <div class="row">
+                    @foreach (var relatedProduct in ViewBag.RelatedProducts)
+                    {
+                        <div class="col-md-4">
+                            <div class="card product-card">
+                                <img src="@relatedProduct.ImageUrl" class="card-img-top" alt="@relatedProduct.Name">
+                                <div class="card-body">
+                                    <h5 class="card-title">@relatedProduct.Name</h5>
+                                    <p class="card-text">@relatedProduct.SmallDescription</p>
+                                    <a asp-action="Details" asp-route-id="@relatedProduct.Id" class="btn btn-primary">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</section>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize thumbnail gallery
+            const thumbnails = document.querySelectorAll('.thumbnail');
+            const mainImage = document.querySelector('.product-image');
+            
+            thumbnails.forEach(thumb => {
+                thumb.addEventListener('click', function() {
+                    // Update active state
+                    thumbnails.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update main image with fade effect
+                    const newImageSrc = this.getAttribute('data-image');
+                    mainImage.style.opacity = '0';
+                    setTimeout(() => {
+                        mainImage.src = newImageSrc;
+                        mainImage.style.opacity = '1';
+                    }, 300);
+                });
+            });
+            
+            // Enhanced WhatsApp inquiry button with product details
+            const whatsappInquiry = document.getElementById('whatsappInquiry');
+            if (whatsappInquiry) {
+                whatsappInquiry.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const number = this.getAttribute('data-whatsapp-number');
+                    const product = this.getAttribute('data-product');
+                    
+                    if (number) {
+                        // Get product details for a more detailed inquiry
+                        const productPrice = document.querySelector('.price-tag')?.textContent || 'Price on request';
+                        const productFeatures = [];
+                        document.querySelectorAll('.features-list li').forEach(li => {
+                            const featureText = li.textContent.trim();
+                            if (featureText && !featureText.includes('Features information not available')) {
+                                productFeatures.push(featureText);
+                            }
+                        });
+                        
+                        // Create a detailed message with product information
+                        let message = `Hello Deepotex, I'm interested in *${product}*.\n\n`;
+                        message += `Price: ${productPrice}\n`;
+                        
+                        if (productFeatures.length > 0) {
+                            message += `\nKey features:\n`;
+                            productFeatures.slice(0, 3).forEach(feature => {
+                                message += `- ${feature}\n`;
+                            });
+                            
+                            if (productFeatures.length > 3) {
+                                message += `...and more\n`;
+                            }
+                        }
+                        
+                        message += `\nCan you provide more information about this product?`;
+                        
+                        // Clean the phone number and open WhatsApp
+                        const cleanNumber = number.replace(/[^\d+]/g, '');
+                        const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
+                        
+                        // Open in new window
+                        window.open(whatsappUrl, '_blank');
+                        
+                        // Track the inquiry event if analytics are available
+                        if (typeof gtag !== 'undefined') {
+                            gtag('event', 'whatsapp_inquiry', {
+                                'event_category': 'Product',
+                                'event_label': product
+                            });
+                        }
+                    }
+                });
+            }
+            
+            // Add animation for elements with IntersectionObserver
+            if ('IntersectionObserver' in window) {
+                const fadeElements = document.querySelectorAll('.fade-in');
+                const observerOptions = {
+                    threshold: 0.2,
+                    rootMargin: '0px 0px -50px 0px'
+                };
+                
+                const appearOnScroll = new IntersectionObserver((entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('animated');
+                            observer.unobserve(entry.target);
+                        }
+                    });
+                }, observerOptions);
+                
+                fadeElements.forEach(element => {
+                    appearOnScroll.observe(element);
+                });
+            } else {
+                // Fallback for browsers that don't support IntersectionObserver
+                document.querySelectorAll('.fade-in').forEach(element => {
+                    element.classList.add('animated');
+                });
+            }
+            
+            // Initialize social sharing buttons
+            document.querySelectorAll('.social-share a').forEach(shareBtn => {
+                shareBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const productName = '@Model.Name';
+                    const productUrl = window.location.href;
+                    const shareType = this.querySelector('i').className;
+                    
+                    let shareUrl = '';
+                    
+                    if (shareType.includes('facebook')) {
+                        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
+                    } else if (shareType.includes('twitter')) {
+                        shareUrl = `https://twitter.com/intent/tweet?text=Check out this product: ${encodeURIComponent(productName)}&url=${encodeURIComponent(productUrl)}`;
+                    } else if (shareType.includes('linkedin')) {
+                        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(productUrl)}`;
+                    } else if (shareType.includes('whatsapp')) {
+                        shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent('Check out this product: ' + productName + ' ' + productUrl)}`;
+                    }
+                    
+                    if (shareUrl) {
+                        window.open(shareUrl, '_blank', 'width=600,height=400');
+                    }
+                });
+            });
+            
+            // Image loading error handling
+            const productImages = document.querySelectorAll('.product-image, .thumbnail-img, .img-responsive');
+            productImages.forEach(img => {
+                img.addEventListener('error', function() {
+                    // Replace broken images with placeholder
+                    this.src = '/images/placeholder.html';
+                    this.alt = 'Image not available';
+                });
+            });
+        });
+    </script>
+}
