@@ -133,13 +133,7 @@
                             }
                         </ul>
                     </div>
-                    @if (Model.Category != null)
-                    {
-                        <div class="product-category">
-                            <span class="category-label">Category:</span>
-                            <span class="category-name">@Model.Category.Name</span>
-                        </div>
-                    }
+                    
 
                     <!-- Social Media Sharing -->
                     <div class="social-sharing mt-4">
@@ -157,10 +151,7 @@
                                class="btn btn-linkedin" target="_blank" rel="noopener noreferrer" title="Share on LinkedIn">
                                 <i class="fab fa-linkedin-in"></i>
                             </a>
-                            <a href="mailto:?subject=@encodedProductName&body=Check out this product: @encodedProductUrl" 
-                               class="btn btn-email" title="Share via Email">
-                                <i class="fas fa-envelope"></i>
-                            </a>
+                           
                         </div>
                     </div>
 
