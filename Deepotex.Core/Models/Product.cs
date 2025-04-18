@@ -25,10 +25,11 @@ public class Product
     
     [Required]
     public decimal Price { get; set; }
-    public int? CategoryId { get; set; } = 1;
-    public Category? Category { get; set; }
+    public int CategoryId { get; set; } = 1;
+    public Category Category { get; set; }
+
     [Required]
-    public string? ImageUrl { get; set; }
+    public List<string> ImageUrls { get; set; } = new();
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateTime UpdatedAt { get; set; } = DateTime.Now;
 }

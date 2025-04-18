@@ -46,11 +46,11 @@
             {
                 foreach (var product in Model)
                 {
-                    <div class="col-md-4 col-sm-6 product-item fade-in" data-category="@(product.CategoryId.HasValue ? product.CategoryId.Value : 1)">
+                    <div class="col-md-4 col-sm-6 product-item fade-in" data-category="@(product.CategoryId ==1)">
                         <div class="productbox">
                             <div class="fadeshop">
                                 <div class="maxproduct">
-                                    <img src="@(string.IsNullOrEmpty(product.ImageUrl) ? "/images/product-placeholder.jpg" : product.ImageUrl)" 
+                                    <img src="@((product.ImageUrls == null || !product.ImageUrls.Any()) ? "/images/product-placeholder.jpg" : product.ImageUrls.First())" 
                                          alt="@(string.IsNullOrEmpty(product.Name) ? "Product" : product.Name)" 
                                          class="img-fluid" 
                                          loading="lazy">

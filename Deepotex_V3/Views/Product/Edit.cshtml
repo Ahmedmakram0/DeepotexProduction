@@ -52,21 +52,52 @@
         <span asp-validation-for="Price" class="text-danger"></span>
     </div>
 
-
-    <!-- Current image display -->
+    <!-- Current images display -->
     <div class="form-group">
-        <label class="control-label">Current Image</label>
-        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        <label class="control-label">Current Images</label>
+        @if (Model.ImageUrls != null && Model.ImageUrls.Any())
         {
-            <img src="@Model.ImageUrl" class="img-fluid" style="max-height: 200px;" alt="Current Product Image" />
+            <div class="row">
+                @for (int i = 0; i < Model.ImageUrls.Count; i++)
+                {
+                    <div class="col-md-3 mb-3">
+                        <div class="card">
+                            <img src="@Model.ImageUrls[i]" class="img-fluid card-img-top" alt="Product Image @(i+1)" />
+                            <div class="card-body p-2">
+                                <div class="form-check">
+                                    <input type="checkbox" id="keepImage_@i" name="KeepImages" value="@i" class="form-check-input" checked />
+                                    <label class="form-check-label" for="keepImage_@i">Keep</label>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" name="ExistingImageUrls[@i]" value="@Model.ImageUrls[i]" />
+                    </div>
+                }
+            </div>
+            <small class="text-muted">Uncheck to remove an image</small>
         }
         else
         {
-            <p>No image uploaded.</p>
+            <p>No images uploaded.</p>
         }
     </div>
 
+    <!-- Add New Images -->
+    <div class="form-group">
+        <label class="control-label">Add New Images</label>
+        <input type="file" name="NewImages" class="form-control" multiple accept="image/*" onchange="previewImages(event)" />
+        <small class="text-muted">You can select multiple images (hold Ctrl/Cmd while selecting)</small>
+    </div>
 
+    <!-- Image Preview -->
+    <div class="form-group">
+        <div id="imagesPreviewContainer" class="row mt-2"></div>
+    </div>
+
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
 </form>
 
 @section Scripts {
@@ -94,16 +125,42 @@
             }
         });
 
-        // Image preview
-        function previewImage(event) {
-            var reader = new FileReader();
-            reader.onload = function () {
-                var output = document.getElementById('imagePreview');
-                output.src = reader.result;
-                output.style.display = 'block';
-            };
-            reader.readAsDataURL(event.target.files[0]);
+        // Multiple images preview
+        function previewImages(event) {
+            const container = document.getElementById('imagesPreviewContainer');
+            container.innerHTML = '';
+            
+            if (event.target.files) {
+                Array.from(event.target.files).forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const previewDiv = document.createElement('div');
+                        previewDiv.className = 'col-md-3 mb-2';
+                        
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'img-fluid rounded';
+                        img.style.maxHeight = '150px';
+                        img.alt = `New Image Preview ${index + 1}`;
+                        
+                        previewDiv.appendChild(img);
+                        container.appendChild(previewDiv);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
         }
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const keepImages = document.querySelectorAll('input[name="KeepImages"]:checked').length;
+            const newImages = document.querySelector('input[name="NewImages"]').files.length;
+            
+            if (keepImages === 0 && newImages === 0) {
+                e.preventDefault();
+                alert('Please keep at least one existing image or upload a new one.');
+            }
+        });
     </script>
 }
 

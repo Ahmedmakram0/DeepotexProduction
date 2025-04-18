@@ -1,3 +1,4 @@
+// Deepotex_V2/Controllers/ProductController.cs
 using Deepotex.core.Models;
 using Deepotex.core.Repositories;
 using Deepotex.core.ViewModels;
@@ -5,6 +6,8 @@ using Deepotex.EF.Repos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,19 +18,21 @@ namespace Deepotex_V2.Controllers
         private readonly IProductRepo _repo;
         private readonly PhotoServices _cloudinaryService;
         private readonly IWebHostEnvironment _env;
+
         public ProductController(IProductRepo repo, PhotoServices cloudinaryService, IWebHostEnvironment env)
         {
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
             _cloudinaryService = cloudinaryService ?? throw new ArgumentNullException(nameof(cloudinaryService));
-            _env = env;
+            _env = env ?? throw new ArgumentNullException(nameof(env));
         }
+
         private string GetRandomBackgroundImage()
         {
             string imagesFolder = Path.Combine(_env.WebRootPath, "images");
             string[] imageFiles = Directory.GetFiles(imagesFolder, "*.jpg");
             if (imageFiles.Length == 0)
             {
-                return "/images/default-image.jpg"; 
+                return "/images/saudi1.jpg";
             }
             Random random = new Random();
             int randomIndex = random.Next(0, imageFiles.Length);
@@ -43,12 +48,7 @@ namespace Deepotex_V2.Controllers
             try
             {
                 var result = _repo.GetAll();
-                if (result == null || !result.Any())
-                {
-                    // Return an empty view instead of redirecting to avoid confusion
-                    return View(Enumerable.Empty<Product>());
-                }
-                return View(result);
+                return View(result ?? Enumerable.Empty<Product>());
             }
             catch (Exception ex)
             {
@@ -73,32 +73,27 @@ namespace Deepotex_V2.Controllers
                 {
                     return NotFound($"Product with ID {id} not found.");
                 }
-                
-                // Get related products (products in the same category or random products if no category)
+
                 var relatedProducts = new List<Product>();
-                if (result.CategoryId.HasValue)
+                if (result.CategoryId==1)
                 {
-                    // Get products from the same category, excluding the current product
                     relatedProducts = _repo.GetAll()
                         .Where(p => p.CategoryId == result.CategoryId && p.Id != result.Id)
                         .Take(3)
                         .ToList();
                 }
-                
-                // If we don't have enough related products, add some random ones
+
                 if (relatedProducts.Count < 3)
                 {
                     var randomProducts = _repo.GetAll()
                         .Where(p => p.Id != result.Id && !relatedProducts.Select(rp => rp.Id).Contains(p.Id))
-                        .OrderBy(p => Guid.NewGuid()) // Random ordering
+                        .OrderBy(p => Guid.NewGuid())
                         .Take(3 - relatedProducts.Count)
                         .ToList();
-                    
                     relatedProducts.AddRange(randomProducts);
                 }
-                
+
                 ViewBag.RelatedProducts = relatedProducts;
-                
                 return View("Details", result);
             }
             catch (Exception ex)
@@ -114,7 +109,11 @@ namespace Deepotex_V2.Controllers
             try
             {
                 ViewBag.Categories = _repo.GetCategories() ?? Enumerable.Empty<Category>();
-                return View(new ProductViewModel { Features = new List<string>() });
+                return View(new ProductViewModel
+                {
+                    Features = new List<string>(),
+                    Images = new List<IFormFile>()
+                });
             }
             catch (Exception ex)
             {
@@ -133,6 +132,16 @@ namespace Deepotex_V2.Controllers
                 return BadRequest("Product data is missing.");
             }
 
+            // Handle single image as a list for compatibility
+            if (product.Images == null)
+            {
+                product.Images = new List<IFormFile>();
+                if (Request.Form.Files.Any(f => f.Name == "Image"))
+                {
+                    product.Images.Add(Request.Form.Files["Image"]);
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 ViewBag.Categories = _repo.GetCategories() ?? Enumerable.Empty<Category>();
@@ -141,18 +150,17 @@ namespace Deepotex_V2.Controllers
 
             try
             {
-                if (product.Image == null || product.Image.Length == 0)
+                if (!product.Images.Any(f => f != null && f.Length > 0))
                 {
-                    ModelState.AddModelError("Image", "Please select an image to upload.");
+                    ModelState.AddModelError("Images", "Please select at least one image to upload.");
                     ViewBag.Categories = _repo.GetCategories() ?? Enumerable.Empty<Category>();
                     return View(product);
                 }
 
-                // Upload to Cloudinary
-                string imageUrl = await _cloudinaryService.UploadProductImageAsync(product.Image);
-                if (string.IsNullOrEmpty(imageUrl))
+                var imageUrls = await _cloudinaryService.UploadProductImagesAsync(product.Images);
+                if (!imageUrls.Any())
                 {
-                    ModelState.AddModelError("Image", "Failed to upload image to Cloudinary.");
+                    ModelState.AddModelError("Images", "Failed to upload images to Cloudinary.");
                     ViewBag.Categories = _repo.GetCategories() ?? Enumerable.Empty<Category>();
                     return View(product);
                 }
@@ -164,8 +172,8 @@ namespace Deepotex_V2.Controllers
                     Description = product.Description,
                     Features = product.Features ?? new List<string>(),
                     Price = product.Price,
-                    CategoryId = 1, // Default to 1 if null
-                    ImageUrl = imageUrl,
+                    CategoryId =  1,
+                    ImageUrls = imageUrls,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 };
@@ -185,7 +193,6 @@ namespace Deepotex_V2.Controllers
         }
 
         [Authorize]
-        
         public IActionResult Delete()
         {
             try
@@ -200,7 +207,6 @@ namespace Deepotex_V2.Controllers
             }
         }
 
-        
         [HttpPost, ActionName("Delete")]
         [Authorize]
         [ValidateAntiForgeryToken]
@@ -217,21 +223,22 @@ namespace Deepotex_V2.Controllers
                 int deletedCount = 0;
                 foreach (var id in ids)
                 {
-                    if (id <= 0) continue; // Skip invalid IDs
+                    if (id <= 0)
+                        continue;
 
                     var product = _repo.GetById(id);
                     if (product != null)
                     {
-                        if (!string.IsNullOrEmpty(product.ImageUrl))
+                        if (product.ImageUrls.Any())
                         {
-                            await _cloudinaryService.DeleteProductImageAsync(product.ImageUrl);
+                            await _cloudinaryService.DeleteProductImagesAsync(product.ImageUrls);
                         }
                         _repo.Delete(id);
                         deletedCount++;
                     }
                 }
 
-            if (deletedCount > 0)
+                if (deletedCount > 0)
                 {
                     TempData["Success"] = $"{deletedCount} product(s) deleted successfully.";
                 }
@@ -264,7 +271,8 @@ namespace Deepotex_V2.Controllers
                     SmallDescription = product.SmallDescription,
                     Description = product.Description,
                     Features = product.Features,
-                    Price = product.Price
+                    Price = product.Price,
+                    Images = new List<IFormFile>()
                 };
 
                 ViewBag.Categories = _repo.GetCategories() ?? Enumerable.Empty<Category>();
@@ -288,6 +296,16 @@ namespace Deepotex_V2.Controllers
                 return RedirectToAction("Index");
             }
 
+            // Handle single image as a list for compatibility
+            if (product.Images == null)
+            {
+                product.Images = new List<IFormFile>();
+                if (Request.Form.Files.Any(f => f.Name == "Image"))
+                {
+                    product.Images.Add(Request.Form.Files["Image"]);
+                }
+            }
+
             if (!ModelState.IsValid)
             {
                 ViewBag.Categories = _repo.GetCategories() ?? Enumerable.Empty<Category>();
@@ -303,33 +321,39 @@ namespace Deepotex_V2.Controllers
                     return RedirectToAction("Index");
                 }
 
-                // Update product properties
                 existingProduct.Name = product.Name;
                 existingProduct.SmallDescription = product.SmallDescription;
                 existingProduct.Description = product.Description;
                 existingProduct.Features = product.Features;
                 existingProduct.Price = product.Price;
+                existingProduct.CategoryId = 1;
                 existingProduct.UpdatedAt = DateTime.Now;
 
-                // Handle image upload if a new image is provided
-                if (product.Image != null && product.Image.Length > 0)
+                if (product.Images.Any(f => f != null && f.Length > 0))
                 {
-                    // Delete old image from Cloudinary
-                    if (!string.IsNullOrEmpty(existingProduct.ImageUrl))
+                    // Delete old images from Cloudinary
+                    if (existingProduct.ImageUrls.Any())
                     {
-                        await _cloudinaryService.DeleteProductImageAsync(existingProduct.ImageUrl);
+                        await _cloudinaryService.DeleteProductImagesAsync(existingProduct.ImageUrls);
                     }
 
-                    // Upload new image to Cloudinary
-                    string imageUrl = await _cloudinaryService.UploadProductImageAsync(product.Image);
-                    if (string.IsNullOrEmpty(imageUrl))
+                    // Upload new images
+                    var newImageUrls = await _cloudinaryService.UploadProductImagesAsync(product.Images);
+                    if (!newImageUrls.Any())
                     {
-                        ModelState.AddModelError("Image", "Failed to upload image to Cloudinary.");
+                        ModelState.AddModelError("Images", "Failed to upload images to Cloudinary.");
                         ViewBag.Categories = _repo.GetCategories() ?? Enumerable.Empty<Category>();
                         return View(product);
                     }
 
-                    existingProduct.ImageUrl = imageUrl;
+                    existingProduct.ImageUrls = newImageUrls;
+                }
+
+                if (!existingProduct.ImageUrls.Any())
+                {
+                    ModelState.AddModelError("Images", "Product must have at least one image.");
+                    ViewBag.Categories = _repo.GetCategories() ?? Enumerable.Empty<Category>();
+                    return View(product);
                 }
 
                 _repo.Update(id, existingProduct);

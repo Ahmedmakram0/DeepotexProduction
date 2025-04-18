@@ -1,9 +1,11 @@
 ﻿using Deepotex.core.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Deepotex.EF;
@@ -19,11 +21,6 @@ public  class ApplicationDbContext:DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<Category>()
-            .HasMany(c => c.Products)
-            .WithOne(p => p.Category)
-            .HasForeignKey(p => p.CategoryId)
-            .OnDelete(DeleteBehavior.Cascade);
-        modelBuilder.Entity<Category>()
             .HasData(
                 new Category
                 {
@@ -38,6 +35,10 @@ public  class ApplicationDbContext:DbContext
                     v => string.Join(";", v),
                     v => v.Split(';', StringSplitOptions.RemoveEmptyEntries).ToList()
                 );
-
+        modelBuilder.Entity<Product>()
+                .Property(p => p.ImageUrls)
+                .HasConversion(
+                    v => JsonSerializer.Serialize(v, new JsonSerializerOptions()),
+                    v => JsonSerializer.Deserialize<List<string>>(v, new JsonSerializerOptions()) ?? new List<string>());
     }
 }

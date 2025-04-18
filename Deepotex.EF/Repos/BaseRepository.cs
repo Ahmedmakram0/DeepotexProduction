@@ -28,7 +28,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         Save();
     }
 
-    public List<T> GetAll()
+    public virtual List<T> GetAll()
     {
         var result = _context.Set<T>().ToList();
         if(result == null)
@@ -37,7 +37,7 @@ public class BaseRepository<T> : IBaseRepository<T> where T : class
         }
         return result;
     }
-    public T GetById(int id)
+    public virtual T GetById(int id)
     {
         var result = _context.Set<T>().FirstOrDefault();
         if (result == null)

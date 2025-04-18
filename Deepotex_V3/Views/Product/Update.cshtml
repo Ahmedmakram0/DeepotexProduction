@@ -70,16 +70,42 @@
                             <span asp-validation-for="Price" class="text-danger"></span>
                         </div>
 
-                        <!-- Image Upload -->
-                        <div class="form-group mb-4">
-                            <label asp-for="Image" class="form-label fw-bold">Product Image</label>
-                            <div class="custom-file">
-                                <input asp-for="Image" type="file" class="form-control" accept="image/*" onchange="previewImage(event)" />
-                                <small class="form-text text-muted">Leave empty to keep the current image</small>
-                                <span asp-validation-for="Image" class="text-danger"></span>
+                        <!-- Existing Images -->
+                        @if (Model.ImageUrls != null && Model.ImageUrls.Any())
+                        {
+                            <div class="form-group mb-4">
+                                <label class="form-label fw-bold">Existing Images</label>
+                                <div class="row g-2" id="existing-images">
+                                    @for (int i = 0; i < Model.ImageUrls.Count; i++)
+                                    {
+                                        <div class="col-md-4 mb-2 existing-image-container">
+                                            <div class="card h-100">
+                                                <img src="@Model.ImageUrls[i]" class="card-img-top img-fluid" alt="Product Image @(i+1)" />
+                                                <div class="card-footer p-2 text-center">
+                                                    <div class="form-check">
+                                                        <input type="checkbox" class="form-check-input" id="keepImage_@i" name="KeepImages" value="@i" checked />
+                                                        <label class="form-check-label" for="keepImage_@i">Keep</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <input type="hidden" name="ExistingImageUrls[@i]" value="@Model.ImageUrls[i]" />
+                                        </div>
+                                    }
+                                </div>
+                                <small class="form-text text-muted">Uncheck the box to remove an image</small>
                             </div>
-                            <div class="mt-3">
-                                <img id="imagePreview" class="img-fluid rounded" style="max-height: 200px; display: none;" alt="Image Preview" />
+                        }
+
+                        <!-- New Images Upload -->
+                        <div class="form-group mb-4">
+                            <label asp-for="Images" class="form-label fw-bold">Add New Images</label>
+                            <div class="custom-file">
+                                <input asp-for="Images" type="file" class="form-control" accept="image/*" multiple onchange="previewImages(event)" />
+                                <small class="form-text text-muted">You can select multiple new images (hold Ctrl/Cmd while selecting)</small>
+                                <span asp-validation-for="Images" class="text-danger"></span>
+                            </div>
+                            <div id="imagesPreviewContainer" class="mt-3 row g-2">
+                                <!-- Preview images will be shown here -->
                             </div>
                         </div>
 
@@ -128,15 +154,30 @@
             }
         });
 
-        // Image preview
-        function previewImage(event) {
-            var reader = new FileReader();
-            reader.onload = function () {
-                var output = document.getElementById('imagePreview');
-                output.src = reader.result;
-                output.style.display = 'block';
-            };
-            reader.readAsDataURL(event.target.files[0]);
+        // Multiple images preview
+        function previewImages(event) {
+            const container = document.getElementById('imagesPreviewContainer');
+            container.innerHTML = '';
+            
+            if (event.target.files) {
+                Array.from(event.target.files).forEach((file, index) => {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const previewDiv = document.createElement('div');
+                        previewDiv.className = 'col-md-4 mb-2';
+                        
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.className = 'img-fluid rounded';
+                        img.style.maxHeight = '150px';
+                        img.alt = `New Image Preview ${index + 1}`;
+                        
+                        previewDiv.appendChild(img);
+                        container.appendChild(previewDiv);
+                    }
+                    reader.readAsDataURL(file);
+                });
+            }
         }
 
         // Form validation
@@ -149,9 +190,64 @@
                         event.preventDefault();
                         event.stopPropagation();
                     }
+                    
+                    // Check if we have at least one image (either existing kept or new)
+                    const existingImages = document.querySelectorAll('input[name="KeepImages"]:checked').length;
+                    const newImages = document.querySelector('input[type="file"]').files.length;
+                    
+                    if (existingImages === 0 && newImages === 0) {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        
+                        // Display error message
+                        const errorMsg = document.createElement('div');
+                        errorMsg.className = 'alert alert-danger mt-3';
+                        errorMsg.textContent = 'Please keep at least one existing image or upload a new one';
+                        
+                        const imageSection = document.querySelector('.form-group:has(input[type="file"])');
+                        if (!document.getElementById('image-error')) {
+                            errorMsg.id = 'image-error';
+                            imageSection.appendChild(errorMsg);
+                        }
+                    } else if (document.getElementById('image-error')) {
+                        document.getElementById('image-error').remove();
+                    }
+                    
                     form.classList.add('was-validated');
                 }, false);
             });
         })();
+        
+        // Display TempData alert if exists
+        document.addEventListener('DOMContentLoaded', function() {
+            const tempDataSuccess = '@TempData["Success"]';
+            const tempDataError = '@TempData["Error"]';
+            
+            if (tempDataSuccess && tempDataSuccess !== '') {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-success alert-dismissible fade show mt-3';
+                alertDiv.innerHTML = `
+                    ${tempDataSuccess}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.card-body').prepend(alertDiv);
+                
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    const bsAlert = new bootstrap.Alert(alertDiv);
+                    bsAlert.close();
+                }, 5000);
+            }
+            
+            if (tempDataError && tempDataError !== '') {
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                alertDiv.innerHTML = `
+                    ${tempDataError}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+                document.querySelector('.card-body').prepend(alertDiv);
+            }
+        });
     </script>
-} 
+}

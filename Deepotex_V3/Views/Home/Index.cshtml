@@ -105,12 +105,13 @@
             {
                 @foreach (var item in Model)
                 {
+                    var imageUrl = item.ImageUrls != null && item.ImageUrls.Any() ? item.ImageUrls.First() : "/images/product-placeholder.jpg";
                     <div class="col-md-4 col-sm-6 fade-in">
                         <div class="productbox">
                             <div class="fadeshop">
                                 <div class="maxproduct">
                                     <div class="product-image-container skeleton-loading">
-                                        <img src="@item.ImageUrl" alt="@item.SmallDescription" class="img-responsive" loading="lazy" />
+                                        <img src="@imageUrl" alt="@item.SmallDescription" class="img-responsive" loading="lazy" />
                                     </div>
                                     <div class="captionshop text-center">
                                         <h3>@item.SmallDescription</h3>

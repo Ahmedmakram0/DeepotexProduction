@@ -47,9 +47,9 @@
                                                 <td>@product.Price.ToString("C")</td>
                                                 <td>@(product.Category?.Name ?? "None")</td>
                                                 <td>
-                                                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                                                    @if (product.ImageUrls != null && product.ImageUrls.Any())
                                                     {
-                                                        <img src="@product.ImageUrl" class="img-thumbnail" style="max-height: 100px;" alt="@product.Name" />
+                                                        <img src="@product.ImageUrls.First()" class="img-thumbnail" style="max-height: 100px;" alt="@product.Name" />
                                                     }
                                                     else
                                                     {
@@ -118,4 +118,3 @@
         });
     </script>
 }
-

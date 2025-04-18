@@ -2,6 +2,11 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = Model.Name;
+    var imageUrls = Model.ImageUrls ?? new List<string>();
+    var productUrl = Url.Action("Details", "Product", new { id = Model.Id }, Context.Request.Scheme);
+    var encodedProductUrl = Uri.EscapeDataString(productUrl);
+    var encodedProductName = Uri.EscapeDataString(Model.Name);
+    var encodedDescription = Uri.EscapeDataString(Model.SmallDescription);
 }
 
 <!-- Skip to content link for accessibility -->
@@ -50,16 +55,72 @@
         
         <div class="row">
             <div class="col-md-6">
-                <div class="product-image">
-                    <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded" />
+                <!-- Product Image Carousel -->
+                <div class="product-image-container">
+                    @if (imageUrls.Count > 1)
+                    {
+                        <div id="productImageCarousel" class="carousel slide" data-bs-ride="carousel">
+                            <!-- Carousel indicators -->
+                            <div class="carousel-indicators">
+                                @for (int i = 0; i < imageUrls.Count; i++)
+                                {
+                                    <button type="button" data-bs-target="#productImageCarousel" data-bs-slide-to="@i" 
+                                            class="@(i == 0 ? "active" : "")" aria-current="@(i == 0 ? "true" : "false")" 
+                                            aria-label="Slide @(i+1)"></button>
+                                }
+                            </div>
+                            
+                            <!-- Carousel items -->
+                            <div class="carousel-inner rounded">
+                                @for (int i = 0; i < imageUrls.Count; i++)
+                                {
+                                    <div class="carousel-item @(i == 0 ? "active" : "")">
+                                        <img src="@imageUrls[i]" class="d-block w-100 img-fluid product-main-image" alt="@Model.Name - Image @(i+1)">
+                                    </div>
+                                }
+                            </div>
+                            
+                            <!-- Carousel controls -->
+                            <button class="carousel-control-prev" type="button" data-bs-target="#productImageCarousel" data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Previous</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#productImageCarousel" data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Next</span>
+                            </button>
+                        </div>
+                        
+                        <!-- Thumbnail Navigation -->
+                        <div class="product-thumbnails mt-3 row g-2">
+                            @for (int i = 0; i < imageUrls.Count; i++)
+                            {
+                                <div class="col-3">
+                                    <img src="@imageUrls[i]" class="img-thumbnail thumbnail-nav @(i == 0 ? "active" : "")" 
+                                         alt="Thumbnail @(i+1)" data-bs-target="#productImageCarousel" data-bs-slide-to="@i">
+                                </div>
+                            }
+                        </div>
+                    }
+                    else if (imageUrls.Count == 1)
+                    {
+                        <!-- Single Image Display -->
+                        <div class="product-image">
+                            <img src="@imageUrls.First()" alt="@Model.Name" class="img-fluid rounded product-main-image" />
+                        </div>
+                    }
+                    else 
+                    {
+                        <!-- No Image Display -->
+                        <div class="product-image">
+                            <img src="/images/no-image.jpg" alt="No image available" class="img-fluid rounded product-main-image" />
+                        </div>
+                    }
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="product-details">
                     <h2 class="product-title">@Model.Name</h2>
-                    <div class="product-price">
-                        <span class="price">$@Model.Price.ToString("F2")</span>
-                    </div>
                     <div class="product-description">
                         <p>@Model.Description</p>
                     </div>
@@ -79,6 +140,37 @@
                             <span class="category-name">@Model.Category.Name</span>
                         </div>
                     }
+
+                    <!-- Social Media Sharing -->
+                    <div class="social-sharing mt-4">
+                        <h4>Share this product</h4>
+                        <div class="social-share-buttons">
+                            <a href="https://www.facebook.com/sharer/sharer.php?u=@encodedProductUrl&quote=@encodedProductName" 
+                               class="btn btn-facebook" target="_blank" rel="noopener noreferrer" title="Share on Facebook">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url=@encodedProductUrl&text=@encodedProductName&hashtags=Deepotex" 
+                               class="btn btn-twitter" target="_blank" rel="noopener noreferrer" title="Share on Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/shareArticle?mini=true&url=@encodedProductUrl&title=@encodedProductName&summary=@encodedDescription" 
+                               class="btn btn-linkedin" target="_blank" rel="noopener noreferrer" title="Share on LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <a href="mailto:?subject=@encodedProductName&body=Check out this product: @encodedProductUrl" 
+                               class="btn btn-email" title="Share via Email">
+                                <i class="fas fa-envelope"></i>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- WhatsApp Inquiry Button -->
+                    <div class="mt-4">
+                        <a href="https://wa.me/?text=Hello, I'm interested in @encodedProductName. Can you provide more information?" 
+                           class="btn btn-success btn-lg" target="_blank" rel="noopener noreferrer">
+                            <i class="fab fa-whatsapp"></i> Inquire on WhatsApp
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -92,7 +184,10 @@
                     {
                         <div class="col-md-4">
                             <div class="card product-card">
-                                <img src="@relatedProduct.ImageUrl" class="card-img-top" alt="@relatedProduct.Name">
+                                @{
+                                    var relatedProductImageUrl = relatedProduct.ImageUrls.FirstOrDefault() ?? "/images/no-image.jpg";
+                                }
+                                <img src="@relatedProductImageUrl" class="card-img-top" alt="@relatedProduct.Name">
                                 <div class="card-body">
                                     <h5 class="card-title">@relatedProduct.Name</h5>
                                     <p class="card-text">@relatedProduct.SmallDescription</p>
@@ -110,143 +205,288 @@
 @section Scripts {
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize thumbnail gallery
-            const thumbnails = document.querySelectorAll('.thumbnail');
-            const mainImage = document.querySelector('.product-image');
-            
+            // Initialize thumbnail navigation
+            const thumbnails = document.querySelectorAll('.thumbnail-nav');
             thumbnails.forEach(thumb => {
                 thumb.addEventListener('click', function() {
                     // Update active state
                     thumbnails.forEach(t => t.classList.remove('active'));
                     this.classList.add('active');
                     
-                    // Update main image with fade effect
-                    const newImageSrc = this.getAttribute('data-image');
-                    mainImage.style.opacity = '0';
-                    setTimeout(() => {
-                        mainImage.src = newImageSrc;
-                        mainImage.style.opacity = '1';
-                    }, 300);
+                    // Trigger carousel slide
+                    const slideIndex = this.getAttribute('data-bs-slide-to');
+                    const carousel = document.querySelector('#productImageCarousel');
+                    const bsCarousel = new bootstrap.Carousel(carousel);
+                    bsCarousel.to(parseInt(slideIndex));
                 });
             });
             
-            // Enhanced WhatsApp inquiry button with product details
-            const whatsappInquiry = document.getElementById('whatsappInquiry');
-            if (whatsappInquiry) {
-                whatsappInquiry.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const number = this.getAttribute('data-whatsapp-number');
-                    const product = this.getAttribute('data-product');
+            // Update thumbnail when carousel slides
+            const carousel = document.getElementById('productImageCarousel');
+            if (carousel) {
+                carousel.addEventListener('slid.bs.carousel', function(event) {
+                    const slideIndex = event.to;
                     
-                    if (number) {
-                        // Get product details for a more detailed inquiry
-                        const productPrice = document.querySelector('.price-tag')?.textContent || 'Price on request';
-                        const productFeatures = [];
-                        document.querySelectorAll('.features-list li').forEach(li => {
-                            const featureText = li.textContent.trim();
-                            if (featureText && !featureText.includes('Features information not available')) {
-                                productFeatures.push(featureText);
-                            }
-                        });
-                        
-                        // Create a detailed message with product information
-                        let message = `Hello Deepotex, I'm interested in *${product}*.\n\n`;
-                        message += `Price: ${productPrice}\n`;
-                        
-                        if (productFeatures.length > 0) {
-                            message += `\nKey features:\n`;
-                            productFeatures.slice(0, 3).forEach(feature => {
-                                message += `- ${feature}\n`;
-                            });
-                            
-                            if (productFeatures.length > 3) {
-                                message += `...and more\n`;
-                            }
-                        }
-                        
-                        message += `\nCan you provide more information about this product?`;
-                        
-                        // Clean the phone number and open WhatsApp
-                        const cleanNumber = number.replace(/[^\d+]/g, '');
-                        const whatsappUrl = `https://wa.me/${cleanNumber}?text=${encodeURIComponent(message)}`;
-                        
-                        // Open in new window
-                        window.open(whatsappUrl, '_blank');
-                        
-                        // Track the inquiry event if analytics are available
-                        if (typeof gtag !== 'undefined') {
-                            gtag('event', 'whatsapp_inquiry', {
-                                'event_category': 'Product',
-                                'event_label': product
-                            });
-                        }
+                    // Update active thumbnail
+                    thumbnails.forEach(t => t.classList.remove('active'));
+                    const activeThumb = document.querySelector(`.thumbnail-nav[data-bs-slide-to="${slideIndex}"]`);
+                    if (activeThumb) {
+                        activeThumb.classList.add('active');
                     }
+                });
+                
+                // Initialize Bootstrap carousel if it exists
+                new bootstrap.Carousel(carousel, {
+                    interval: 5000,  // Auto-slide interval in milliseconds
+                    wrap: true,      // Cycle continuously
+                    touch: true      // Allow swipe on touch devices
                 });
             }
-            
-            // Add animation for elements with IntersectionObserver
-            if ('IntersectionObserver' in window) {
-                const fadeElements = document.querySelectorAll('.fade-in');
-                const observerOptions = {
-                    threshold: 0.2,
-                    rootMargin: '0px 0px -50px 0px'
-                };
-                
-                const appearOnScroll = new IntersectionObserver((entries, observer) => {
-                    entries.forEach(entry => {
-                        if (entry.isIntersecting) {
-                            entry.target.classList.add('animated');
-                            observer.unobserve(entry.target);
-                        }
-                    });
-                }, observerOptions);
-                
-                fadeElements.forEach(element => {
-                    appearOnScroll.observe(element);
-                });
-            } else {
-                // Fallback for browsers that don't support IntersectionObserver
-                document.querySelectorAll('.fade-in').forEach(element => {
-                    element.classList.add('animated');
-                });
-            }
-            
-            // Initialize social sharing buttons
-            document.querySelectorAll('.social-share a').forEach(shareBtn => {
-                shareBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    
-                    const productName = '@Model.Name';
-                    const productUrl = window.location.href;
-                    const shareType = this.querySelector('i').className;
-                    
-                    let shareUrl = '';
-                    
-                    if (shareType.includes('facebook')) {
-                        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(productUrl)}`;
-                    } else if (shareType.includes('twitter')) {
-                        shareUrl = `https://twitter.com/intent/tweet?text=Check out this product: ${encodeURIComponent(productName)}&url=${encodeURIComponent(productUrl)}`;
-                    } else if (shareType.includes('linkedin')) {
-                        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(productUrl)}`;
-                    } else if (shareType.includes('whatsapp')) {
-                        shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent('Check out this product: ' + productName + ' ' + productUrl)}`;
-                    }
-                    
-                    if (shareUrl) {
-                        window.open(shareUrl, '_blank', 'width=600,height=400');
-                    }
-                });
-            });
             
             // Image loading error handling
-            const productImages = document.querySelectorAll('.product-image, .thumbnail-img, .img-responsive');
+            const productImages = document.querySelectorAll('.carousel-item img, .thumbnail-nav, .img-responsive, .card-img-top');
             productImages.forEach(img => {
                 img.addEventListener('error', function() {
                     // Replace broken images with placeholder
-                    this.src = '/images/placeholder.html';
+                    this.src = '/images/placeholder.jpg';
                     this.alt = 'Image not available';
                 });
             });
         });
     </script>
+
+    <style>
+        .product-image-container {
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .product-main-image {
+            object-fit: contain;
+            max-height: 500px;
+            width: 100%;
+            background-color: #f8f9fa;
+            padding: 1rem;
+        }
+        
+        .carousel-item {
+            background-color: #f8f9fa;
+        }
+        
+        .product-thumbnails {
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+        
+        .product-thumbnails .thumbnail-nav {
+            cursor: pointer;
+            height: 80px;
+            object-fit: cover;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+            border-radius: 4px;
+        }
+        
+        .product-thumbnails .thumbnail-nav.active {
+            opacity: 1;
+            border: 2px solid #0d6efd;
+            transform: scale(1.05);
+        }
+        
+        .product-thumbnails .thumbnail-nav:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        /* Social Media Sharing Styles */
+        .social-sharing {
+            border-top: 1px solid #eee;
+            padding-top: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .social-sharing h4 {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .social-share-buttons {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 0 auto;
+            justify-content: center;
+            max-width: 400px;
+            padding: 0 1rem;
+        }
+
+        .social-share-buttons .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 120px;
+            height: 40px;
+            padding: 0 1.5rem;
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-facebook {
+            background-color: #1877f2;
+        }
+
+        .btn-twitter {
+            background-color: #1da1f2;
+        }
+
+        .btn-linkedin {
+            background-color: #0a66c2;
+        }
+
+        .btn-email {
+            background-color: #666;
+        }
+
+        .social-share-buttons .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            opacity: 0.9;
+        }
+
+        .social-share-buttons .btn i {
+            font-size: 1.2rem;
+        }
+
+        /* WhatsApp Inquiry Button */
+        .btn-success {
+            width: 100%;
+            max-width: 400px;
+            margin: 1.5rem auto 0;
+            padding: 1rem;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border-radius: 50px;
+            background-color: #25d366;
+            border: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .btn-success:hover {
+            background-color: #128C7E;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Mobile Responsive Styles */
+        @@media (max-width: 768px) {
+            .social-sharing {
+                padding: 1rem;
+            }
+
+            .social-sharing h4 {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+
+            .social-share-buttons {
+                gap: 0.6rem;
+                padding: 0 0.5rem;
+            }
+
+            .social-share-buttons .btn {
+                min-width: 110px;
+                height: 36px;
+            }
+
+            .btn-success {
+                margin-top: 1.2rem;
+                padding: 0.8rem;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .social-share-buttons {
+                gap: 0.4rem;
+                flex-direction: column;
+                width: 100%;
+                max-width: 280px;
+            }
+
+            .social-share-buttons .btn {
+                width: 100%;
+                height: 36px;
+            }
+
+            .btn-success {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+
+        /* Product Details Enhancement */
+        .product-details {
+            padding: 2rem;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .product-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+        }
+
+        .product-description {
+            margin-bottom: 2rem;
+            line-height: 1.6;
+            color: #666;
+        }
+
+        .product-features {
+            margin-bottom: 2rem;
+        }
+
+        .feature-list {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            color: #25d366;
+            margin-right: 0.5rem;
+        }
+
+        .product-category {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+        }
+    </style>
 }

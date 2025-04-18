@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace Deepotex.core.Repositories;
 public interface IProductRepo : IBaseRepository<Product>
 {
-    List<Product> GetLatest();
+     List<Product>  GetLatest();
     void Add(Product product);
     void Update(int id, Product product);
     List<Category> GetCategories();
