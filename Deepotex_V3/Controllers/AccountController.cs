@@ -1,19 +1,17 @@
 ﻿using Deepotex.core.ViewModels;
-using Microsoft.AspNetCore.Authentication;
+using Deepotex.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Deepotex_V2.Controllers;
 
 public class AccountController : Controller
 {
-    private readonly string _validEmail;
-    private readonly string _hashedPassword;
+    private readonly IAuthService _authService;
 
-    public AccountController(IConfiguration configuration)
+    public AccountController(IAuthService authService)
     {
-        _validEmail = configuration["Admin:Email"] ?? throw new ArgumentNullException("Admin:Email is missing in configuration.");
-        _hashedPassword = configuration["Admin:Password"] ?? throw new ArgumentNullException("Admin:Password is missing in configuration.");
+        _authService = authService;
     }
 
     [HttpGet]
@@ -28,18 +26,10 @@ public class AccountController : Controller
     {
         if (ModelState.IsValid)
         {
-            if (model.Email == _validEmail && BCrypt.Net.BCrypt.Verify(model.Password, _hashedPassword))
+            var result = await _authService.LoginAsync(model.Email, model.Password, model.RememberMe);
+            if (result.Succeeded)
             {
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, model.Email),
-                    new Claim(ClaimTypes.Email, model.Email)
-                };
-                var identity = new ClaimsIdentity(claims, "Cookies");
-                var principal = new ClaimsPrincipal(identity);
-
-                await HttpContext.SignInAsync("Cookies", principal);
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
             }
             else
             {
@@ -47,5 +37,11 @@ public class AccountController : Controller
             }
         }
         return View(model);
+    }
+
+    public async Task<IActionResult> Logout()
+    {
+        await _authService.LogoutAsync();
+        return RedirectToAction("Index", "Home");
     }
 }

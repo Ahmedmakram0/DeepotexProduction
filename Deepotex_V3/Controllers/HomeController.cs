@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using Deepotex.core.Models;
-using Deepotex.core.Repositories;
 using Deepotex.core.ViewModels;
+using Deepotex.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 
@@ -10,53 +10,32 @@ namespace Deepotex_V2.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        protected readonly IProductRepo _repo;
+        private readonly IProductService _service;
         private readonly IWebHostEnvironment _env;
-        public HomeController(ILogger<HomeController> logger, IProductRepo repo, IWebHostEnvironment env)
+
+        public HomeController(ILogger<HomeController> logger, IProductService service, IWebHostEnvironment env)
         {
             _logger = logger;
-            _repo = repo;
+            _service = service;
             _env = env;
         }
 
-
         public IActionResult Index()
         {
-            string randomImage = GetRandomBackgroundImage();
-            ViewBag.RandomBackgroundImage = randomImage;
-            var result = _repo.GetLatest();
-            if (result.Count==0)
-            {
-                return View();
-            }
+            ViewBag.RandomBackgroundImage = _service.GetRandomBackgroundImage(_env.WebRootPath);
+            var result = _service.GetLatestProducts();
             return View(result);
-        }
-        private string GetRandomBackgroundImage()
-        {
-            string imagesFolder = Path.Combine(_env.WebRootPath, "images");
-            string[] imageFiles = Directory.GetFiles(imagesFolder, "*.jpg");
-            if (imageFiles.Length == 0)
-            {
-                return "/images/default-image.jpg"; // Fallback if no images are found
-            }
-            Random random = new Random();
-            int randomIndex = random.Next(0, imageFiles.Length);
-            string filePath = imageFiles[randomIndex];
-            string fileName = Path.GetFileName(filePath);
-            return $"/images/{fileName}";
         }
 
         public IActionResult Contact()
         {
-            string randomImage = GetRandomBackgroundImage();
-            ViewBag.RandomBackgroundImage = randomImage;
+            ViewBag.RandomBackgroundImage = _service.GetRandomBackgroundImage(_env.WebRootPath);
             return View();
         }
         
         public IActionResult About()
         {
-            string randomImage = GetRandomBackgroundImage();
-            ViewBag.RandomBackgroundImage = randomImage;
+            ViewBag.RandomBackgroundImage = _service.GetRandomBackgroundImage(_env.WebRootPath);
             return View();
         }
 

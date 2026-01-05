@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deepotex.Core", "Deepotex.C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deepotex.EF", "Deepotex.EF\Deepotex.EF.csproj", "{460822D1-93C5-496F-8D13-5AB75B8AA814}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Deepotex.Services", "Deepotex.Services\Deepotex.Services.csproj", "{55555555-5555-5555-5555-555555555555}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{460822D1-93C5-496F-8D13-5AB75B8AA814}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{460822D1-93C5-496F-8D13-5AB75B8AA814}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{460822D1-93C5-496F-8D13-5AB75B8AA814}.Release|Any CPU.Build.0 = Release|Any CPU
+		{55555555-5555-5555-5555-555555555555}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{55555555-5555-5555-5555-555555555555}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{55555555-5555-5555-5555-555555555555}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{55555555-5555-5555-5555-555555555555}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

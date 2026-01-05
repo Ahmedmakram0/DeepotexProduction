@@ -9,6 +9,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Deepotex.Core\Deepotex.Core.csproj" />
     <ProjectReference Include="..\Deepotex.EF\Deepotex.EF.csproj" />
+    <ProjectReference Include="..\Deepotex.Services\Deepotex.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
